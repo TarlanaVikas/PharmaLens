@@ -1,0 +1,93 @@
+<!-- templates/confirm_match.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaLens | Confirm your match</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="page-header"><nav class="nav-shell" aria-label="Main navigation"><a class="brand" href="{{ url_for('upload_file') }}"><span class="brand-mark" aria-hidden="true">P</span><span>Pharma<span class="brand-light">Lens</span></span></a><a class="nav-link" href="{{ url_for('upload_file') }}">Start over <span aria-hidden="true">↗</span></a></nav></header>
+    <main class="page-main">
+        <p class="eyebrow"><span>02</span> Review the closest matches</p>
+        <h1 class="page-title">Which one looks right?</h1>
+        <p class="page-intro">Compare the images below and select the medicine that matches your upload. Open any image for a closer look.</p>
+
+            <form action="{{ url_for('confirm_match') }}" method="post">
+                {% set grouped_matches = top_matches | groupby('medicine_name') %}
+                {% for medicine, items in grouped_matches %}
+                    <div class="medicine-group">
+                        <label class="medicine-option">
+                            <input class="form-check-input mt-1 flex-shrink-0" type="radio" name="selected_medicine"
+                                   value="{{ medicine }}" required>
+                            <div class="flex-grow-1">
+                                <h2 class="medicine-title">{{ medicine }}</h2>
+                                <div class="medicine-images d-flex flex-wrap">
+                                    {% for item in items %}
+                                        <img src="{{ url_for('dataset_image', filename=item['image_filename']) }}" 
+                                             class="clickable-image" 
+                                             alt="{{ medicine }}" 
+                                             data-bs-toggle="modal" 
+                                             data-bs-target="#imageModal" 
+                                             data-bs-image="{{ url_for('dataset_image', filename=item['image_filename']) }}" 
+                                             data-bs-title="{{ medicine }}">
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="confirm-button">Confirm this medicine <span aria-hidden="true">↗</span></button>
+            </form>
+
+            {% if error %}
+            <div class="error-alert" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+    </main>
+
+    <!-- Bootstrap Modal for Image Display -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Medicine Image</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="" id="modalImage" class="img-fluid" alt="Medicine Image">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer result-footer"><a class="brand brand-footer" href="{{ url_for('upload_file') }}"><span class="brand-mark" aria-hidden="true">P</span><span>Pharma<span class="brand-light">Lens</span></span></a><span>Look closer. Know more.</span></footer>
+
+    <!-- Bootstrap JS (including Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS to handle image clicks and modal display -->
+    <script>
+        // Listen for the modal to be shown
+        var imageModal = document.getElementById('imageModal');
+        imageModal.addEventListener('show.bs.modal', function (event) {
+            // Button that triggered the modal
+            var img = event.relatedTarget;
+            // Extract info from data-bs-* attributes
+            var imageSrc = img.getAttribute('data-bs-image');
+            var imageTitle = img.getAttribute('data-bs-title');
+            // Update the modal's image and title
+            var modalImage = imageModal.querySelector('#modalImage');
+            var modalTitle = imageModal.querySelector('#imageModalLabel');
+            modalImage.src = imageSrc;
+            modalTitle.textContent = imageTitle;
+        });
+    </script>
+</body>
+</html>

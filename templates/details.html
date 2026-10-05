@@ -1,0 +1,19 @@
+<!-- details.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PharmaLens | Medicine details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Details for {{ result.medicine_name | title }}</h1>
+    <p><strong>Description:</strong> {{ result.description }}</p>
+    <p><strong>Uses:</strong> {{ result.uses }}</p>
+    <p><strong>Side Effects:</strong> {{ result.side_effects }}</p>
+    <p><strong>Dosage:</strong> {{ result.dosage }}</p>
+    <p><strong>Manufacturer:</strong> {{ result.manufacturer }}</p>
+    <p><strong>Contraindications:</strong> {{ result.contraindications }}</p>
+    <p><strong>Storage Instructions:</strong> {{ result.storage_instructions }}</p>
+</body>
+</html>

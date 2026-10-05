@@ -1,0 +1,27 @@
+<!-- confirm.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PharmaLens | Confirm your medicine</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Please confirm your medicine</h1>
+    <p>Uploaded Image:</p>
+    <img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" alt="Uploaded Medicine Image" width="300px">
+    
+    <h2>Is one of these your medicine?</h2>
+    <div>
+        {% for match in matches %}
+            <div style="margin-bottom: 20px;">
+                <img src="{{ url_for('static', filename='datasets/images/' + match.medicine_image) }}" alt="{{ match.medicine_name }}" width="300px">
+                <p>{{ match.medicine_name | title }} (Similarity: {{ match.similarity | round(2) }})</p>
+                <a href="{{ url_for('confirm_medicine', medicine_name=match.medicine_name) }}">
+                    <button>Yes, this is my medicine</button>
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

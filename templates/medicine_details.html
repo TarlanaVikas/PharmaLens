@@ -1,0 +1,42 @@
+<!-- templates/medicine_details.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaLens | Medicine details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="page-header"><nav class="nav-shell" aria-label="Main navigation"><a class="brand" href="{{ url_for('upload_file') }}"><span class="brand-mark" aria-hidden="true">P</span><span>Pharma<span class="brand-light">Lens</span></span></a><a class="nav-link" href="{{ url_for('upload_file') }}">Identify another <span aria-hidden="true">↗</span></a></nav></header>
+    <main class="page-main">
+        <p class="eyebrow"><span>03</span> Match details</p>
+        <h1 class="page-title">{{ medicine['medicine_name'] }}</h1>
+        <div class="details-layout">
+            <div><img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" class="uploaded-photo" alt="Your uploaded medicine"><p class="photo-label">Your uploaded image</p></div>
+            <section class="details-copy" aria-label="Medicine information">
+                <h2>At a glance</h2>
+                <p>{{ medicine['description'] }}</p>
+                <dl class="detail-list">
+                    <div class="detail-row"><dt>Uses</dt><dd>{{ medicine['uses'] }}</dd></div>
+                    <div class="detail-row"><dt>Side effects</dt><dd>{{ medicine['side_effects'] }}</dd></div>
+                    <div class="detail-row"><dt>Dosage</dt><dd>{{ medicine['dosage'] }}</dd></div>
+                    <div class="detail-row"><dt>Manufacturer</dt><dd>{{ medicine['manufacturer'] }}</dd></div>
+                    <div class="detail-row"><dt>Contraindications</dt><dd>{{ medicine['contraindications'] }}</dd></div>
+                    <div class="detail-row"><dt>Storage</dt><dd>{{ medicine['storage_instructions'] }}</dd></div>
+                </dl>
+                <a class="back-link" href="{{ url_for('upload_file') }}">← Identify another medicine</a>
+            </section>
+        </div>
+        <p class="medical-note">For informational purposes only. Confirm medicine and usage with a qualified healthcare professional.</p>
+    </main>
+    <footer class="site-footer result-footer"><a class="brand brand-footer" href="{{ url_for('upload_file') }}"><span class="brand-mark" aria-hidden="true">P</span><span>Pharma<span class="brand-light">Lens</span></span></a><span>Look closer. Know more.</span></footer>
+
+    <!-- Bootstrap JS (including Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

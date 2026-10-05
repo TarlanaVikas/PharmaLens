@@ -1,0 +1,129 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PharmaLens | Medicine identification</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="home-page">
+    <header class="site-header">
+        <nav class="nav-shell" aria-label="Main navigation">
+            <a class="brand" href="{{ url_for('upload_file') }}" aria-label="PharmaLens home">
+                <span class="brand-mark" aria-hidden="true">P</span>
+                <span>Pharma<span class="brand-light">Lens</span></span>
+            </a>
+            <div class="nav-note"><span class="status-dot"></span> Image-based medicine matching</div>
+            <a class="nav-link" href="#how-it-works">How it works <span aria-hidden="true">↗</span></a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero-wrap">
+            <div class="hero-copy">
+                <p class="eyebrow"><span>01</span> A clearer first look</p>
+                <h1>Medicine, meet<br><span>its match.</span></h1>
+                <p class="hero-description">Photograph a medicine pack. PharmaLens finds visually similar items and brings their available details into focus.</p>
+                <div class="hero-meta">
+                    <span><span class="meta-icon">⌕</span> Visual matching</span>
+                    <span><span class="meta-icon">✳</span> Details at a glance</span>
+                </div>
+            </div>
+            <div class="hero-art" aria-label="Medicine package example">
+                <div class="art-grid"></div>
+                <span class="art-index">PHOTOGRAPH / IDENTIFY</span>
+                <div class="art-orbit orbit-one"></div>
+                <div class="art-orbit orbit-two"></div>
+                <div class="art-image-frame">
+                    <img src="{{ url_for('static', filename='images/examples/amoxicillin.jpg') }}" alt="Example medicine packaging">
+                    <span class="scan-corner corner-tl"></span><span class="scan-corner corner-br"></span>
+                </div>
+                <div class="art-caption"><span class="caption-dot"></span> A good photo is the first step</div>
+                <span class="art-number">PL<br>01</span>
+            </div>
+        </section>
+
+        <section class="workspace-section" id="identify">
+            <div class="section-heading">
+                <div><p class="eyebrow"><span>02</span> Start with a photo</p><h2>What are we looking at?</h2></div>
+                <p class="section-aside">Use a clear, well-lit image of the packaging or medicine.</p>
+            </div>
+            <form class="upload-panel" action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                <label class="drop-zone" id="drop-zone" for="medicine_image" tabindex="0">
+                    <input type="file" id="medicine_image" name="medicine_image" accept="image/*" required>
+                    <span class="upload-symbol" aria-hidden="true">↑</span>
+                    <span class="drop-title" id="drop-title">Drop an image here</span>
+                    <span class="drop-hint" id="drop-hint">or <span>browse files</span> from your device</span>
+                    <span class="file-types">JPG · PNG · WEBP</span>
+                    <img class="upload-preview" id="upload-preview" alt="Selected medicine preview" hidden>
+                </label>
+                <div class="upload-actions">
+                    <div class="privacy-note"><span aria-hidden="true">↳</span> Your image is used to find a visual match.</div>
+                    <button class="submit-button" type="submit"><span>Find a match</span><span aria-hidden="true">↗</span></button>
+                </div>
+                {% if error %}
+                <p class="error-message" role="alert">{{ error }}</p>
+                {% endif %}
+            </form>
+        </section>
+
+        <section class="process-section" id="how-it-works">
+            <div class="process-top"><p class="eyebrow"><span>03</span> From photo to information</p><span class="process-rule"></span></div>
+            <div class="process-grid">
+                <article class="process-step"><span class="step-number">01</span><h3>Upload</h3><p>Choose a clear photo of the medicine you want to identify.</p></article>
+                <article class="process-step"><span class="step-number">02</span><h3>Compare</h3><p>Review the closest visual matches found in the collection.</p></article>
+                <article class="process-step"><span class="step-number">03</span><h3>Explore</h3><p>Open a match to see the information available for it.</p></article>
+            </div>
+            <p class="medical-note">PharmaLens is an informational tool, not a substitute for professional medical advice.</p>
+        </section>
+    </main>
+
+    <footer class="site-footer"><a class="brand brand-footer" href="{{ url_for('upload_file') }}"><span class="brand-mark" aria-hidden="true">P</span><span>Pharma<span class="brand-light">Lens</span></span></a><span>Look closer. Know more.</span></footer>
+
+    <script>
+        const fileInput = document.getElementById('medicine_image');
+        const dropZone = document.getElementById('drop-zone');
+        const dropTitle = document.getElementById('drop-title');
+        const dropHint = document.getElementById('drop-hint');
+        const preview = document.getElementById('upload-preview');
+
+        function showFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            dropTitle.textContent = file.name;
+            dropHint.textContent = 'Ready to find a visual match';
+            preview.src = URL.createObjectURL(file);
+            preview.hidden = false;
+            dropZone.classList.add('has-file');
+        }
+
+        fileInput.addEventListener('change', () => showFile(fileInput.files[0]));
+        dropZone.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                fileInput.click();
+            }
+        });
+        ['dragenter', 'dragover'].forEach((eventName) => dropZone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropZone.classList.add('is-dragging');
+        }));
+        ['dragleave', 'drop'].forEach((eventName) => dropZone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            dropZone.classList.remove('is-dragging');
+        }));
+        dropZone.addEventListener('drop', (event) => {
+            const [file] = event.dataTransfer.files;
+            if (!file) return;
+            const transfer = new DataTransfer();
+            transfer.items.add(file);
+            fileInput.files = transfer.files;
+            showFile(file);
+        });
+    </script>
+</body>
+</html>
